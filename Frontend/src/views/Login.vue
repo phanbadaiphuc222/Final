@@ -9,7 +9,7 @@
             @submit:account="onLoginAccount" 
         />
         <div class="alternative-option mt-4">
-            Already have an account? 
+            Don't have an account? 
             <button 
               @click="moveToRegister"
               class="login-button"

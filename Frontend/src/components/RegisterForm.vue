@@ -9,6 +9,7 @@
             <label for="password">Password</label>
             <Field name="password" type="password" class="form-control" v-model="accountLocal.password" />
         </div>
+        
         <button type="submit" id="register_button" class="mt-4 btn-pers">
             Go
         </button>
@@ -52,6 +53,10 @@ export default {
         submitAccount() {
             this.$emit('submit:account', this.accountLocal);
         },
+
+        getRole(event) {
+            console.log(event.target.value);
+        }
     },
 };
 </script>

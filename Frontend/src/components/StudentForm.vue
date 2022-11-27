@@ -1,87 +1,96 @@
 <template>
-    <Form
-        @submit="submitStudent"
-        :validation-schema="studentFormSchema"
+
+    <form
+        @submit.prevent="submitStudent"
+        enctype="multipart/form-data"
     >
         <div class="form-group">
             <label for="name">Name</label>
-            <Field
+            <input
                 name="name"
                 type="text"
                 class="form-control"
                 v-model="studentLocal.name"
+                required
             />
-            <ErrorMessage name="name" class="error-feedback" />
         </div>
         <div class="form-group">
             <label for="id">Id</label>
-            <Field
+            <input
                 name="id"
                 type="text"
                 class="form-control"
                 v-model="studentLocal.id"
+                required
             />
-            <ErrorMessage name="id" class="error-feedback" />
         </div>
 
         <div class="form-group">
             <label for="email">Email</label>
-            <Field
+            <input
                 name="email"
                 type="text"
                 class="form-control"
                 v-model="studentLocal.email"
+                required
             />
-            <ErrorMessage name="class_id" class="error-feedback"/>
+
         </div>
 
         <div class="form-group">
             <label for="DOB">Date of birth</label>
-            <Field
+            <input
                 name="DOB"
                 type="text"
                 class="form-control"
                 v-model="studentLocal.DOB"
+                required
             />
-            <ErrorMessage name="class_id" class="error-feedback"/>
         </div>
 
         <div class="form-group">
             <label for="address">Hometown</label>
-            <Field 
+            <input 
                 name="hometown"
                 type="text"
                 class="form-control"
                 v-model="studentLocal.hometown"
+                required
             />
-            <ErrorMessage name="hometown" class="error-feedback"/>
+
         </div>
 
         <div class="form-group">
             <label for="major">Major</label>
-            <Field
+            <input
                 name="major"
                 type="text"
                 class="form-control"
                 v-model="studentLocal.major"
+                required
             />
-            <ErrorMessage name="className" class="error-feedback"/>
         </div>
 
         <div class="form-group">
             <label for="department">Department</label>
-            <Field
+            <input
                 name="department"
                 type="text"
                 class="form-control"
                 v-model="studentLocal.department"
+                required
             />
-            <ErrorMessage name="className" class="error-feedback"/>
+
         </div>
 
         <div class="form-group">
-            <button class="btn btn-primary">
-                <i class="fa-solid fa-floppy-disk"/> Save
+            <label for="department">Image</label>
+            <input lang="en" type="file" ref="file1" @change="onchanged1" />
+        </div>
+
+        <div class="form-group">
+            <button class="btn btn-primary" type="submit">
+                <i class="fa-solid fa-floppy-disk" id="file-path" /> Save
             </button>
             <button
                 v-if="studentLocal.id"
@@ -100,71 +109,58 @@
             <i class="fa-solid fa-arrow-left fa-xl"/>
             </button>
 
-            <!-- <div class="arrow"><i class="fa-solid fa-arrow-left fa-2xl"></i></div> -->
         </div>
-    </Form>
+    </form>
 </template>
 
 <script>
-import * as yup from 'yup';
-import { Form, Field, ErrorMessage} from 'vee-validate';
-
+import { studentService } from '@/services/student.service';
 export default {
-    components: {
-        Form,
-        Field,
-        ErrorMessage,
-    },
-
-    emits: ['submit:student', 'delete:student'],
     props: {
         student: { type: Object, required: true }
     },
 
     data() {
-        const studentFormSchema = yup.object().shape( {
-            name: yup
-                .string()
-                .required('Name must have values.')
-                .min(2, 'Name must have at least 2 characters.')
-                .max(50, 'Nam cannot be more than 50 characters.'),
-
-            // id: yup
-            //     .string()
-            //     .required('Id must have values.')
-            //     .matches(/^[B].*/, 'ID must have the B character first')
-            //     .max(8, 'Must have exact 8 characters.')
-            //     .min(8, 'Must have exact 8 characters.'),
-
-            hometown: yup
-                .string()
-                .max(100, 'Address must have maximum 100 characters.')
-                .min(5, 'Address must have at least 5 characters'),
-            
-            // grade: yup
-            //     .string()
-            //     .required('Hometown must have values.')
-            //     .matches(/([0-9])$/,'Must between 0 and 10'),
-        });
         return {
+            image: '',
             studentLocal: { ...this.student },
-            studentFormSchema,
+            // studentFormSchema,
         };
     },
 
     methods: {
-
+        onchanged1() {
+            this.image = this.$refs.file1.files[0];
+        },
+        
         moveToHome() {
             this.$router.go(-1);
         },
 
-        submitStudent() {
-            this.$emit('submit:student', this.studentLocal);
+        async submitStudent() {
+            // this.$emit('submit:student', this.studentLocal);
+            // console.log(this.studentLocal);
+            // var dataURL = studentLocal.image.toDataURL("C:\Users\DELL\Desktop\ProjectWeb\BackEnd\avatar");
+            const formdata = new FormData();
+
+            formdata.append('name', this.studentLocal.name);
+            formdata.append('id', this.studentLocal.id);
+            formdata.append('email', this.studentLocal.email);
+            formdata.append('DOB', this.studentLocal.DOB);
+            formdata.append('hometown', this.studentLocal.hometown);
+            formdata.append('major', this.studentLocal.major);
+            formdata.append('department', this.studentLocal.department);
+            formdata.append('image',  this.image);
+
+            alert('Successfully added student!');
+
+            const data =  await studentService.create(formdata);
         },
 
         deleteStudent() {
             this.$emit('delete:student', this.studentLocal.id);
         },
+
     },
 };
 </script>

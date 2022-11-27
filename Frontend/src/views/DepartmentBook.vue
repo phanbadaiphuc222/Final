@@ -1,6 +1,8 @@
 <template>
     <AppHeader/>
-    <div class="page row test">
+    <div style="background-color: #f0f2f6; padding: 25px 0px 25px 0px">
+     <div class="box" style="background-color: white">
+     <div class="page row test">
          <div class="col-md-10">
               <InputSearch v-model="searchText" />
          </div>
@@ -60,6 +62,8 @@
                    <!-- </router-link> -->
               </div>
          </div>
+    </div>
+    </div>
     </div>
 </template>
 
@@ -164,6 +168,12 @@ export default {
 
 .test {
      margin-top: 38px;
+}
+
+.box {
+     box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+     margin: 0px 100px 100px 100px;
+     padding: 25px 0px 25px 0px
 }
 
 </style>

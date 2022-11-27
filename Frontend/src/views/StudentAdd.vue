@@ -29,7 +29,8 @@ export default {
                 DOB: '',
                 hometown: '',
                 major: '',
-                department: ''
+                department: '',
+                image: '',
             },
             message: '',
         };
@@ -53,7 +54,7 @@ export default {
 
         async onCreateStudent(student) {
             try {
-                console.log(1)
+                // console.log(student.image);
                 await studentService.create(student);
                 this.message = 'Student added successfully';
             } catch (error) {
@@ -70,7 +71,8 @@ export default {
             DOB: '',
             hometown: '',
             major: '',
-            department: ''
+            department: '',
+            image: '',
         };
         this.message = '';
     },

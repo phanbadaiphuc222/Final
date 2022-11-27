@@ -14,6 +14,12 @@ class StudentService {
                 Accept: 'application/json',
             },
         });
+        this.ImageApi = axios.create({
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                Accept: 'application/json',
+            },
+        });
     }
 
     async getMany() {
@@ -24,8 +30,12 @@ class StudentService {
         return (await this.api.get(`${this.baseUrl}/${id}`)).data;
     }
 
+    // async create(student) {
+    //     return (await this.api.post(this.baseUrl2, student)).data;
+    // }
+
     async create(student) {
-        return (await this.api.post(this.baseUrl2, student)).data;
+        return (await this.ImageApi.post(this.baseUrl2, student)).data;
     }
 
     async getStudentByDepartment(id) {

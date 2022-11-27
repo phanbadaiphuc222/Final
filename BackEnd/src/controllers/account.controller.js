@@ -11,11 +11,12 @@ exports.register = async (req, res, next) => {
         return next (new ApiError(500, 'Email can not be empty!'));
     } else if (!req.body?.password) {
         return next (new ApiError(500, 'Password cannot be empty!'));
-    }
+    } 
 
     try {
         const accountService = new AccountService();
         const account = await accountService.create(req.body);
+        console.log(req.body);
         return res.send(account);
     } catch (error) {
         console.log(error);

@@ -62,7 +62,7 @@ export default {
             if (confirm('Do you really want to delete this stduent?')) {
                 try { 
                     await studentService.deleteStudent(id);
-                    this.$router.push({path:`/department` });
+                    this.$router.go(-1);
                 } catch(error) {
                     console.log(error);
                 }

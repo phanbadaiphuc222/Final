@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
+const path = require('path');
+const multer = require('multer');
 const contactController = require('./controllers/contact.controller');
 const accountController = require('./controllers/account.controller');
 const studentController = require('./controllers/student.controller');
@@ -10,8 +12,15 @@ const { application } = require('express');
 // const multer = require('multer');
 // const upload = multer({dest: 'uploads/'});
 
+const upload = multer({
+    dest: './avatar/'
+})
+
 app.use(cors());
+app.use('/avatar', express.static(path.join(__dirname + '/../avatar')));
 app.use(express.json());
+app.use(express.urlencoded({extended: true}));
+
 
 app.get('/', (req, res) => {
     res.json ({ message: 'Welcome to contact book application.'});
@@ -33,18 +42,10 @@ app.route('/api/student/:id')
     .put(studentController.update);
 
 app.route('/api/student/add')
-    .post(studentController.createStudent)
-
-// app.route('/api/student/add/:id')
-//     .delete(studentController.delete);
+    .post(studentController.uploadAvatar.single('image'), studentController.createStudent); 
 
 app.route('/api/register/:email')    
     .get(accountController.findAllUser);
-
-app.route('/api/contacts')
-    .get(contactController.findAll)
-    .post(contactController.create)
-    .delete(contactController.deleteAll);
 
 app.route('/api/department')
     .get(departmentController.findAllDepartment)
@@ -57,11 +58,6 @@ app.route('/api/:id')
     .get(studentController.findStudentByDepartment);
 
 app.route('/api/contacts/favorite').get(contactController.findAllFavorite);
-
-app.route('/api/contatcs/:id')
-    .get(contactController.findOne)
-    .put(contactController.update)
-    .delete(contactController.delete);
 
 app.use((req, res, next) => {
     return next(new ApiError(404, 'Resource not found'));
@@ -83,3 +79,8 @@ app.use((error, req, res, next) => {
 // });
 
 module.exports = app;
+
+// app.route('/api/contatcs/:id')
+//     .get(contactController.findOne)
+//     .put(contactController.update)
+//     .delete(contactController.delete);

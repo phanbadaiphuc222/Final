@@ -28,4 +28,10 @@ export default {
      </ul>
 </template>
 
+<style>
+li {
+     cursor: pointer;
+}
+</style>
+
 <!-- :key="account.id" -->

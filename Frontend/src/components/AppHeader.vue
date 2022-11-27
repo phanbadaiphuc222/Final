@@ -1,5 +1,5 @@
 <template>
-     <nav class="navbar navbar-expand navbar-dark bg-dark">
+     <nav class="navbar navbar-expand navbar-dark">
           <a
                class="navbar-brand"
           >Web application for managing students</a>
@@ -17,7 +17,7 @@
           <div class="signOutIcon">
                <i 
                     class="fa fa-sign-out fa-2xl" 
-                    style="color: white"
+                    style="color: grey"
                     @click="moveToLogin()"
                >
                </i>

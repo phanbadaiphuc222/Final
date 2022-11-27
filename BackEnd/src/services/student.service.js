@@ -9,7 +9,7 @@ class StudentService {
     #getStudent(payload) {
         const student = {...payload};
         const studentProperties = [
-            "name", "id", "email", "DOB", "hometown", "major", "department"
+            "name", "id", "email", "DOB", "hometown", "major", "department", "image"
         ];
 
         Object.keys(student).forEach(function(key) {
@@ -23,7 +23,7 @@ class StudentService {
     #register(payload) {
         const student = {...payload};
         const studentProperties = [
-            "name", "id", "email", "DOB", "hometown", "major", "department"
+            "name", "id", "email", "DOB", "hometown", "major", "department", "image"
         ];
 
         Object.keys(student).forEach(function(key) {
@@ -73,7 +73,13 @@ class StudentService {
     }
 
     async findStudentById(id ) {
-        return await this.students.where('id', id).select('*').first();
+        try {
+            var data = await this.students.where('id', id).select('*').first();
+            data.image = `${data.image}`;
+            return data;
+        } catch (e) {
+            console.log(e);
+        }
     }
 
     async findAllStudent(id) {

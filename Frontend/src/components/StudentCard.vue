@@ -6,6 +6,7 @@ export default {
         student : { type: Object, require: true},
      },
 };
+
 </script>
 
 <template>
@@ -37,6 +38,10 @@ export default {
           <div class="p-1">
                <strong>Department:</strong>
                {{ student.department }}
+          </div>
+          <div class="p-1">
+               <strong>Image:</strong>
+               <img :src="student.image" style="width: 350px">
           </div>
      </div>
 </template>
