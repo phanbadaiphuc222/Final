@@ -4,10 +4,20 @@
         style="margin-top: 10%"
     >   
         <h2 class="mb-3">Login</h2>
-        <RegisterForm 
+        <!-- <RegisterForm 
             :account="account" 
             @submit:account="onLoginAccount" 
-        />
+        /> -->
+
+        <form @submit.prevent="Login">
+            <div class="input" style="margin-bottom: 15px">
+                <input class="form-control" type="text" placeholder="Email" v-model="email" />
+            </div>
+           <div class="input">
+                <input class="form-control" type="password" placeholder="Password" v-model="password"/>
+            </div>
+            <input type="submit" value="Login" class="mt-4 btn-pers"/>
+        </form>
         <div class="alternative-option mt-4">
             Don't have an account? 
             <button 
@@ -24,55 +34,78 @@
 
 import RegisterForm from '@/components/RegisterForm.vue';
 import { accountService } from '@/services/account.service';
+import { ref } from 'vue';
+import firebase from 'firebase';
 
 
 export default {
 
-    components: {
-        RegisterForm,
+    setup () {
+        const email = ref("");
+        const password = ref("");
+
+        const Login = () => {
+            firebase
+                .auth()
+                .signInWithEmailAndPassword(email.value, password.value)
+                .then(data => console.log(data))
+                .catch(err => alert(err.message));
+        }
+
+        return {
+            Login, 
+            email,
+            password,
+        }
     },
 
-    data() {
-        return {
-            account: {
-                email: '',
-                password: '',
-            },
-            message: '',
-        };
-    },
+    //old
+
+    // components: {
+    //     RegisterForm,
+    // },
+
+    // data() {
+    //     return {
+    //         account: {
+    //             email: '',
+    //             password: '',
+    //         },
+    //         message: '',
+    //     };
+    // },
 
     methods: {
         moveToRegister() {
             this.$router.push("/");
         },
 
-        async onLoginAccount(account) {
-            try {
+        // async onLoginAccount(account) {
+        //     try {
                 
-                const Allaccount = await accountService.getMany();
+        //         const Allaccount = await accountService.getMany();
 
-                for (let i = 0; i< Allaccount.length; i++) {
-                    if (Allaccount[i].email == account.email && Allaccount[i].password == account.password) {
-                        this.$router.push({ name: "departmentbook" });
-                    }
-                }
-                this.message = 'Login failed';
-                // this.message = 'Successfully registered';
-                // this.$router.push("/contactbook");
-            } catch (error) {
-                console.log(error);
-            }
-        }
+        //         for (let i = 0; i< Allaccount.length; i++) {
+        //             if (Allaccount[i].email == account.email && Allaccount[i].password == account.password) {
+        //                 this.$router.push({ name: "departmentbook" });
+        //             }
+        //         }
+        //         this.message = 'Login failed';
+        //         // this.message = 'Successfully registered';
+        //         // this.$router.push("/contactbook");
+        //     } catch (error) {
+        //         console.log(error);
+        //     }
+        // }
     },
 
-    created() {
-        this.account = {
-            email : '',
-            password : '',
-        };
-            this.message = '';
-        },
+    // created() {
+    //     this.account = {
+    //         email : '',
+    //         password : '',
+    //     };
+    //         this.message = '';
+    //     },
 };
 </script>
 

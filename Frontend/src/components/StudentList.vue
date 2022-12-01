@@ -16,19 +16,22 @@ export default {
 <template>
      <ul class="list-group">
           <li 
-               class="list-group-item"
+               class="list-group-item d-flex justify-content-between align-items-center"
                v-for="(student, index) in students"
-               
+               style="width: 660px"
                :class="{ active: index === activeIndex }"
                @click="updateActiveIndex(index)"
-
           >
-               {{ student.name }}     
+               {{ student.name }} 
+               <!-- <span>
+                    <span style="margin-left: 5px"><button class="btn btn-sm btn-warning">Edit</button></span>
+                    <span style="margin-: 5px"><button class="btn btn-sm btn-danger"> Delete</button></span> 
+               </span>   -->
           </li>
      </ul>
 </template>
 
-<style>
+<style scoped>
 li {
      cursor: pointer;
 }

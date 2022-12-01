@@ -59,7 +59,7 @@ export default {
         },
 
         async onDeleteStudent(id) {
-            if (confirm('Do you really want to delete this stduent?')) {
+            if (confirm('Do you really want to delete this student?')) {
                 try { 
                     await studentService.deleteStudent(id);
                     this.$router.go(-1);

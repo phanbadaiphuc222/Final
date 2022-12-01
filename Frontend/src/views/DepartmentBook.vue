@@ -1,15 +1,29 @@
 <template>
-    <AppHeader/>
+     <!-- cursor: pointer; -->
+    <!-- <AppHeader/> -->
+    <nav class="navbar navbar-expand navbar-dark" style="height: 70px">
+          <div class="mr-auto nabar-bar" >
+          </div>
+          <div class="signOutIcon">
+               <i 
+                    class="fa fa-sign-out fa-2xl" 
+                    style="color: grey; cursor: pointer"
+                    @click="Logout"
+               >
+               </i>
+          </div> 
+     </nav>
     <div style="background-color: #f0f2f6; padding: 25px 0px 25px 0px">
      <div class="box" style="background-color: white">
      <div class="page row test">
+          <!-- <button @click="Logout">Logout</button> -->
          <div class="col-md-10">
               <InputSearch v-model="searchText" />
          </div>
          <div class="mt-3 col-md-6">
               <h4>
                    Departments
-                   <i class="fas fa-address-book" />
+                   <!-- <i class="fas fa-address-book" /> -->
               </h4>
               <DepartmentList 
                    v-if="filteredDepartmentsCount > 0"
@@ -28,21 +42,30 @@
                         <i class="fas fa-redo" /> Refresh
                    </button>
 
+                   <!-- @click="goToAddDepartment" -->
                    <button
                         class="btn btn-sm btn-success"
-                        @click="goToAddDepartment"
+                        @click="isOpen = true"
                    >
                         <i class="fas fa-plus" /> Add new
                    </button>
 
-                   <button
+                   <!-- <button
                         class="btn btn-sm btn-danger"
                         @click="onDeleteDepartments"
                    >
                         <i class="fas fa-plus" /> Delete all
-                   </button>
+                   </button> -->
               </div>
          </div>
+
+         <DepartmentForm 
+               :department="department" 
+               @submit:department="onCreateDepartment" 
+               :open="isOpen"
+               @close="isOpen = !isOpen" 
+               style="z-index: 100">
+          </DepartmentForm>
          <div class="mt-3 col-md-6">
                <div v-if="activeDepartment">
                    <h4>
@@ -71,8 +94,12 @@
 import DepartmentCard from '@/components/DepartmentCard.vue';
 import InputSearch from '@/components/InputSearch.vue';
 import DepartmentList from '@/components/DepartmentList.vue';
-import { departmentService } from '@/services/department.service';
 import AppHeader from '@/components/AppHeader.vue';
+import DepartmentForm from '@/components/DepartmentForm.vue';
+import { departmentService } from '@/services/department.service';
+
+import firebase from 'firebase';
+import { ref, onBeforeMount } from 'vue';
 
 export default {
      components: {
@@ -80,6 +107,30 @@ export default {
          InputSearch,
          DepartmentList,
          AppHeader,
+         DepartmentForm,
+     },
+
+     props: {
+          departmentId: { type: String, required: true },
+     },
+
+     setup () {
+
+          const Logout = () => {
+               firebase
+                    .auth()
+                    .signOut()
+                    .then(() => console.log("Signed out"))
+                    .catch(err => alert(err.message));
+          }
+
+          const isOpen = ref(false);
+
+          return {
+               Logout,
+               isOpen
+          }
+
      },
 
     data() {
@@ -87,6 +138,11 @@ export default {
               departments: [],
               activeIndex: -1,
               searchText : '',
+              department: {
+                name: '',
+                id: '',
+               },
+               message: '',
          };
     },
 
@@ -124,20 +180,29 @@ export default {
     methods: {
 
          async retrieveDepartments() {
-              try {
+               try {
                     const departmentList = await departmentService.getMany();
                     this.departments = departmentList.sort((current, next) =>
                          current.name.localeCompare(next.name)
                     );
-              } catch (error) {
+               } catch (error) {
                    console.log(error);
-              }
+               }
          },
 
          refreshList() {
               this.retrieveDepartments();
               this.activeIndex = -1;
          },
+
+         async onCreateDepartment(department) {
+            try {
+                await departmentService.create(department);
+                this.message = 'Department added successfully';
+            } catch (error) {
+                console.log(error);
+            }
+        },
 
          async onDeleteDepartments() {
                if (confirm('Do you want to delete this department?')) {
@@ -157,6 +222,15 @@ export default {
      mounted () {
          this.refreshList();
      },
+
+
+     created() {
+        this.department = {
+            name: '',
+            id: ''
+        };
+        this.message = '';
+    },
 };
 </script>
 
@@ -174,6 +248,14 @@ export default {
      box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
      margin: 0px 100px 100px 100px;
      padding: 25px 0px 25px 0px
+}
+
+.signOutIcon {
+     margin-right: 50px;
+}
+
+.accountIcon {
+     margin-right: 100px;
 }
 
 </style>

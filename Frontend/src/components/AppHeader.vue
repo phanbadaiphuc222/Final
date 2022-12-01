@@ -1,18 +1,6 @@
 <template>
-     <nav class="navbar navbar-expand navbar-dark">
-          <a
-               class="navbar-brand"
-          >Web application for managing students</a>
-          <div class="mr-auto nabar-bar">
-               <li class="nav-item">
-                    <router-link 
-                         :to="{ name : 'studentbook' }"
-                         class="nav-link"
-                    >
-                         Students
-                         <i class="fas fa-address-book" />
-                    </router-link>
-               </li>
+     <nav class="navbar navbar-expand navbar-dark" style="height: 70px">
+          <div class="mr-auto nabar-bar" >
           </div>
           <div class="signOutIcon">
                <i 
@@ -21,8 +9,7 @@
                     @click="moveToLogin()"
                >
                </i>
-          </div>
-          
+          </div> 
      </nav>
 </template>
 

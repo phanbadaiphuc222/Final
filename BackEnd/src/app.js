@@ -3,7 +3,6 @@ const cors = require('cors');
 const app = express();
 const path = require('path');
 const multer = require('multer');
-const contactController = require('./controllers/contact.controller');
 const accountController = require('./controllers/account.controller');
 const studentController = require('./controllers/student.controller');
 const departmentController = require('./controllers/department.controller');
@@ -56,8 +55,6 @@ app.route('/api/department/add')
     
 app.route('/api/:id')
     .get(studentController.findStudentByDepartment);
-
-app.route('/api/contacts/favorite').get(contactController.findAllFavorite);
 
 app.use((req, res, next) => {
     return next(new ApiError(404, 'Resource not found'));

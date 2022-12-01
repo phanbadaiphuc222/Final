@@ -19,12 +19,13 @@
          <div class="mt-3 col-md-6" id="students">
               <h4>
                    Students
-                   <i class="fas fa-address-book" />
+                   <!-- <i class="fas fa-address-book" /> -->
               </h4>
               <StudentList 
                    v-if="filteredStudentsCount > 0"
                    :students="filteredStudents"
                    v-model:activeIndex="activeIndex"
+                   @click="isOpen = true"
               />
               <p v-else>
                    No students exist.
@@ -44,22 +45,23 @@
                    >
                         <i class="fas fa-plus" /> Add new
                    </button>
-
+<!-- 
                    <button
                         class="btn btn-sm btn-danger"
                         @click="onDeleteContacts"
                    >
                         <i class="fas fa-plus" /> Delete all
-                   </button>
+                   </button> -->
               </div>
          </div>
          <div v-if="activeStudent" class="mt-6 col-md-4" id="detailInfor">
                <div class="mt-4">
-                   <h4>
-                        Detail information
-                        <i class="fas fa-address-card" />
-                   </h4>
-                    <StudentCard :student="activeStudent" />
+                    <StudentCard 
+                         :student="activeStudent"
+                         :open="isOpen"
+                         @close="isOpen = !isOpen"
+                         class="studentCard"
+                    />
                     <router-link
                          :to="{
                              name: 'student.edit',
@@ -67,7 +69,8 @@
                          }"
                     >
                         <span class="mt-2 badge badge-warning">
-                             <i class="fas fa-edit" />Modify</span>
+                             <i class="fas fa-edit" />Modify
+                         </span>
                    </router-link>
               </div>
          </div>
@@ -85,6 +88,7 @@ import InputSearch from '@/components/InputSearch.vue';
 import StudentList from '@/components/StudentList.vue';
 import { studentService } from '@/services/student.service';
 import AppHeader from '@/components/AppHeader.vue';
+import { ref } from 'vue';
 
 export default {
      components: {
@@ -93,6 +97,13 @@ export default {
          StudentList,
          AppHeader,
      },
+
+     setup() {
+          const isOpen = ref(false);
+          return { isOpen }
+     },
+
+     emits: ['update:activeIndex'],
 
      props: {
         departmentId: { type: Object, required: true },
@@ -103,7 +114,6 @@ export default {
               students: [],
               activeIndex: -1,
               searchText : '',
-              selectedFile: null
          };
     },
 
@@ -139,7 +149,7 @@ export default {
     },
 
     methods: {
-         async retrieveAccounts() {
+          async retrieveAccounts() {
               try {
                    const studentList = await studentService.getStudentByDepartment(this.departmentId);
                    this.students = studentList.sort((current, next) =>
@@ -148,7 +158,7 @@ export default {
               } catch (error) {
                    console.log(error);
               }
-         },
+          },
 
          refreshList() {
               this.retrieveAccounts();
@@ -174,9 +184,9 @@ export default {
                this.selectedFile = event.target.files[0];
           },
 
-          onUpload() {
-               
-          }
+          updateActiveIndex(index) {
+               this.$emit('update:activeIndex', index);
+          },
      },
      mounted () {
          this.refreshList();
@@ -196,6 +206,10 @@ export default {
      box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
      margin: 0px 100px 150px 100px;
      padding: 25px 0px 25px 0px
+}
+
+.studentCard {
+     z-index: 100;
 }
 
 /* #detailInfor{
